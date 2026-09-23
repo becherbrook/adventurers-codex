@@ -24,20 +24,46 @@ Introduced FastAPI and Uvicorn.
 
 Created src/main.py containing the first API endpoints:
 
-GET /classes
-GET /classes/{class_name}
+`GET /classes`
+`GET /classes/{class_name}`
 
 Started the application locally with Uvicorn and successfully tested both endpoints using curl.
 
 The API returned JSON responses as expected.
 
-## Current milestone
+## 23 September 2026
 
-The Adventurer's Codex is now a functioning local Python/FastAPI HTTP API.
+Reviewed the existing FastAPI application and confirmed that the local API was still functioning correctly.
+
+Used `curl` to make HTTP requests against the API and examined the HTTP response headers.
+
+Explored the basic relationship between:
+
+- HTTP requests
+- GET requests
+- URL paths
+- Ports
+- FastAPI route handlers
+- HTTP response status codes
+- JSON responses
+
+Tested the existing endpoints:
+
+- `GET /classes` returned `200 OK`.
+- `GET /classes/fighter` returned `200 OK`.
+
+Deliberately requested a class that does not exist:
+
+- `GET /classes/paladin` returned `500 Internal Server Error`.
+
+Identified that the current implementation raises a Python `KeyError` when an unknown
+
+### Current milestone
+
+The HTTP/API fundamentals have now been introduced using the working Codex application.
 
 Next focus:
 
-Understand the HTTP request/response model.
-Introduce automated testing with pytest.
-Add appropriate error handling.
-Keep the application deliberately small while building the engineering foundations around it.
+- Introduce pytest.
+- Test the existing API endpoints.
+- Add appropriate handling for unknown classes so that the API returns a suitable HTTP response rather than an unhandled server error.
