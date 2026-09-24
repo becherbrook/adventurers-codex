@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from src.classes import classes
 
@@ -12,4 +12,7 @@ def get_classes():
 
 @app.get("/classes/{class_name}")
 def get_class(class_name: str):
-	return classes[class_name]
+    if class_name not in classes:
+        raise HTTPException(status_code=404, detail="Class not found")
+
+    return classes[class_name]
