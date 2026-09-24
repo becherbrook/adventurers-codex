@@ -56,14 +56,55 @@ Deliberately requested a class that does not exist:
 
 - `GET /classes/paladin` returned `500 Internal Server Error`.
 
-Identified that the current implementation raises a Python `KeyError` when an unknown
+Identified that the current implementation raised a Python `KeyError` when an unknown class was requested because the requested class name was used directly as a dictionary key without checking whether it existed.
+
+## 24 September 2026
+
+Introduced pytest and created API tests for the existing endpoints.
+
+Added a test for an unknown class before changing the application code. The test initially failed because requesting `/classes/paladin` resulted in an unhandled `KeyError` and a `500 Internal Server Error`.
+
+Updated `src/main.py` to explicitly handle unknown class names using FastAPI's `HTTPException`, returning `404 Not Found` with the detail `Class not found`.
+
+Ran the test suite using:
+
+`python -m pytest`
+
+All three tests passed.
+
+The test run produced two deprecation warnings relating to the current TestClient/httpx and AnyIO dependencies. These did not affect the test results and were not investigated further.
+
+This development error demonstrated the workflow:
+
+- Observe the failure.
+- Investigate the evidence.
+- Identify the root cause.
+- Define the expected behaviour.
+- Write a test for that behaviour.
+- Implement the correction.
+- Run the tests.
+- Verify the result.
+
+This was a development error rather than a production incident, but it is being documented because the investigation and correction provide a useful record of the development and operational learning process.
 
 ### Current milestone
 
 The HTTP/API fundamentals have now been introduced using the working Codex application.
 
+Pytest has been introduced and is being used to test the API endpoints.
+
+The API now handles requests for unknown classes explicitly, returning `404 Not Found` rather than an unhandled `500 Internal Server Error`.
+
+The current test suite contains three API tests covering:
+
+- `GET /classes`
+- `GET /classes/fighter`
+- `GET /classes/paladin` returning `404 Not Found`
+
+All three tests currently pass.
+
 Next focus:
 
-- Introduce pytest.
-- Test the existing API endpoints.
-- Add appropriate handling for unknown classes so that the API returns a suitable HTTP response rather than an unhandled server error.
+- Reinforce HTTP/API and testing concepts.
+- Introduce SQL and PostgreSQL.
+- Continue documenting development problems, fixes, and operational lessons as they occur.
