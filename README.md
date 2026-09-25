@@ -8,7 +8,7 @@ The application itself is deliberately simple. The main purpose of the project i
 * Linux
 * HTTP and APIs
 * Testing
-* Databases
+* PostgreSQL
 * Docker
 * Cloud infrastructure
 * Infrastructure as Code
@@ -18,40 +18,24 @@ The application itself is deliberately simple. The main purpose of the project i
 
 ## Current status
 
-The project currently contains a small Python/FastAPI application providing a basic HTTP API for D&D classes.
+The project currently contains a small Python/FastAPI application backed by PostgreSQL.
 
 Current endpoints:
 
 * GET /classes — returns the available classes
 * GET /classes/{class_name} — returns information about a specific class
 
-The initial data is stored in a simple Python data structure. The API currently runs locally using Uvicorn.
+The application connects to PostgreSQL using Psycopg.
 
-The project is being developed incrementally, with infrastructure and operational engineering deliberately receiving more attention than application complexity.
+Database configuration is supplied through the `DATABASE_URL` environment variable rather than being stored in source code.
 
-## Planned progression
+The current development environment runs locally on an Ubuntu Server VM using Uvicorn and PostgreSQL.
 
+## Development setup
 
-Python
-  ↓
-FastAPI
-  ↓
-Testing
-  ↓
-PostgreSQL
-  ↓
-Docker
-  ↓
-AWS
-  ↓
-Terraform
-  ↓
-CI/CD
-  ↓
-Monitoring / observability
-  ↓
-Incident investigation and recovery
+Set the PostgreSQL connection string in the shell environment before running the application or tests:
 
+Use the password configured for the local `codex_app` PostgreSQL user:
 
-Operational incidents will eventually be deliberately introduced and documented as part of the learning process.
-
+```bash
+export DATABASE_URL="postgresql://codex_app:PASSWORD@localhost:5432/adventurers_codex"

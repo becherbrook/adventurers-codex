@@ -113,18 +113,32 @@ A temporary Python connection test file was removed after verification. The Git 
 
 ### Current milestone
 
-PostgreSQL has now been introduced as persistent storage for the Codex application.
+The FastAPI application has now been migrated from in-memory class data to PostgreSQL-backed storage.
 
-The existing class data has been moved from the Python dictionary into a PostgreSQL database.
+Created `src/database.py` to provide PostgreSQL connections using the `DATABASE_URL` environment variable rather than storing database credentials in source code.
 
-A dedicated application database user has been created with limited read permissions.
+Updated both API endpoints in `src/main.py` to query PostgreSQL:
 
-Psycopg has been installed and a successful Python-to-PostgreSQL connection has been verified.
+- `GET /classes` retrieves all classes from the `classes` table.
+- `GET /classes/{class_name}` retrieves a specific class from the database and returns `404 Not Found` when it does not exist.
+
+Removed the obsolete `src/classes.py` module because the class data is now stored in PostgreSQL.
+
+Ran the existing API test suite using:
+
+`python -m pytest`
+
+All three tests passed. The same two dependency deprecation warnings remain and were not investigated further.
+
+Verified the database-backed API responses using `curl`.
+
+The development environment now has the following flow:
+
+Python/FastAPI → Psycopg → PostgreSQL
+
+Database credentials are supplied through the `DATABASE_URL` environment variable and are not stored in the repository.
 
 Next focus:
 
-- Connect the FastAPI application to PostgreSQL.
-- Replace the in-memory class dictionary with database queries.
-- Add API tests covering database-backed responses.
-- Continue documenting development problems, fixes, and operational lessons as they occur.
-
+- Complete the database-backed application milestone and commit the changes.
+- Continue towards Docker.
