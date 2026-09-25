@@ -87,24 +87,44 @@ This development error demonstrated the workflow:
 
 This was a development error rather than a production incident, but it is being documented because the investigation and correction provide a useful record of the development and operational learning process.
 
+## 25 September 2026
+
+Installed PostgreSQL 18 in the Ubuntu VM and verified that the PostgreSQL cluster was online.
+
+Created the `adventurers_codex` database and a `classes` table containing the class data previously held in the Python dictionary.
+
+Inserted the existing Fighter, Wizard, Rogue and Cleric data into PostgreSQL and used SQL queries to verify that the data had been stored and could be retrieved.
+
+Installed Psycopg 3.3.6 in the Python virtual environment to provide a Python interface to PostgreSQL.
+
+Created a dedicated `codex_app` PostgreSQL user rather than using the administrative `postgres` account for the application.
+
+The initial Python connection test attempted to connect using the PostgreSQL `postgres` user and failed with `Peer authentication failed`. The Python process was running as the Linux user `motoole`, while PostgreSQL's peer authentication requires the operating-system user and PostgreSQL user to match for that authentication method.
+
+Investigated the authentication behaviour and created the dedicated `codex_app` user instead of changing PostgreSQL's authentication configuration.
+
+Granted `codex_app` permission to connect to the `adventurers_codex` database and read from the `classes` table.
+
+Successfully tested the complete Python connection using Psycopg over TCP:
+
+Python → Psycopg → PostgreSQL → `codex_app` → `adventurers_codex`
+
+A temporary Python connection test file was removed after verification. The Git working tree remains clean.
+
 ### Current milestone
 
-The HTTP/API fundamentals have now been introduced using the working Codex application.
+PostgreSQL has now been introduced as persistent storage for the Codex application.
 
-Pytest has been introduced and is being used to test the API endpoints.
+The existing class data has been moved from the Python dictionary into a PostgreSQL database.
 
-The API now handles requests for unknown classes explicitly, returning `404 Not Found` rather than an unhandled `500 Internal Server Error`.
+A dedicated application database user has been created with limited read permissions.
 
-The current test suite contains three API tests covering:
-
-- `GET /classes`
-- `GET /classes/fighter`
-- `GET /classes/paladin` returning `404 Not Found`
-
-All three tests currently pass.
+Psycopg has been installed and a successful Python-to-PostgreSQL connection has been verified.
 
 Next focus:
 
-- Reinforce HTTP/API and testing concepts.
-- Introduce SQL and PostgreSQL.
+- Connect the FastAPI application to PostgreSQL.
+- Replace the in-memory class dictionary with database queries.
+- Add API tests covering database-backed responses.
 - Continue documenting development problems, fixes, and operational lessons as they occur.
+
