@@ -111,34 +111,81 @@ Python → Psycopg → PostgreSQL → `codex_app` → `adventurers_codex`
 
 A temporary Python connection test file was removed after verification. The Git working tree remains clean.
 
-### Current milestone
+## 26 September 2026
 
-The FastAPI application has now been migrated from in-memory class data to PostgreSQL-backed storage.
+Started containerising the Adventurer's Codex application.
 
-Created `src/database.py` to provide PostgreSQL connections using the `DATABASE_URL` environment variable rather than storing database credentials in source code.
+Created `requirements.txt` containing the pinned runtime dependencies required by the application:
 
-Updated both API endpoints in `src/main.py` to query PostgreSQL:
+* FastAPI 0.141.1
+* Uvicorn 0.53.0
+* Psycopg 3.3.6
 
-- `GET /classes` retrieves all classes from the `classes` table.
-- `GET /classes/{class_name}` retrieves a specific class from the database and returns `404 Not Found` when it does not exist.
+Created a `Dockerfile` using `python:3.14-slim` as the base image. The image installs the runtime dependencies, copies the application source and starts Uvicorn on port 8000.
 
-Removed the obsolete `src/classes.py` module because the class data is now stored in PostgreSQL.
+Created `.dockerignore` to exclude `.git`, `.venv`, Python cache files and pytest cache from the Docker build context.
 
-Ran the existing API test suite using:
+Installed Docker Engine in the Ubuntu VM and configured the `motoole` user for Docker access.
 
-`python -m pytest`
+Built the `adventurers-codex:latest` Docker image successfully.
 
-All three tests passed. The same two dependency deprecation warnings remain and were not investigated further.
+Initially tested the container with a dummy `DATABASE_URL` to verify that the FastAPI application could start successfully inside the container.
 
-Verified the database-backed API responses using `curl`.
+Tested Docker port mapping using `-p 8000:8000`. A request to `/` returned the expected FastAPI `404 Not Found`, confirming that the request reached the container.
 
-The development environment now has the following flow:
+Investigated container-to-host PostgreSQL networking. PostgreSQL was initially listening only on `127.0.0.1:5432`, which is not accessible from a Docker container.
 
-Python/FastAPI → Psycopg → PostgreSQL
+Configured PostgreSQL to listen on both `localhost` and the Docker bridge address `172.17.0.1`.
 
-Database credentials are supplied through the `DATABASE_URL` environment variable and are not stored in the repository.
+Added a PostgreSQL `pg_hba.conf` rule allowing the dedicated `codex_app` user to connect to the `adventurers_codex` database from the Docker bridge subnet using SCRAM authentication.
+
+Started the application container with `DATABASE_URL` supplied as an environment variable and successfully retrieved the class data through:
+
+Docker container → FastAPI → Docker network → PostgreSQL → `classes` table
+
+Verified with:
+
+`curl http://localhost:8000/classes`
+
+The containerised application returned the expected Cleric, Fighter, Rogue and Wizard data.
+
+This milestone demonstrates that the application can now run as a Docker container while using PostgreSQL as an external database service.
 
 Next focus:
 
-- Complete the database-backed application milestone and commit the changes.
-- Continue towards Docker.
+* Review the Docker setup and tests.
+* Commit and push the completed Docker milestone.
+
+### Current milestone
+
+The FastAPI application is now running successfully as a Docker container and continues to use PostgreSQL for persistent storage.
+
+Created `requirements.txt` containing the pinned runtime dependencies required by the application.
+
+Created a `Dockerfile` using `python:3.14-slim` and configured the container to run Uvicorn on port 8000.
+
+Created `.dockerignore` to prevent development files, Git metadata and Python cache files from being included in the Docker build context.
+
+Installed Docker Engine in the Ubuntu VM, configured Docker access for the development user and successfully built the `adventurers-codex:latest` image.
+
+Configured Docker port mapping so that port 8000 on the Ubuntu VM reaches port 8000 inside the application container.
+
+Configured PostgreSQL to accept connections from the Docker bridge address and added a restricted `pg_hba.conf` rule allowing `codex_app` to connect to the `adventurers_codex` database from the Docker bridge subnet.
+
+Verified the complete containerised application path:
+
+Docker container → FastAPI → Docker network → PostgreSQL → `classes` table
+
+The `/classes` endpoint successfully returned the expected database-backed class data when requested through the containerised application.
+
+Database credentials continue to be supplied through the `DATABASE_URL` environment variable and are not stored in the repository.
+
+A development credential was accidentally exposed during the Docker networking setup. The exposed credential was immediately treated as compromised and replaced with a new password. The exposed credential itself is not recorded in project documentation.
+
+Next focus:
+
+* Complete the final Docker test and documentation review.
+* Review the Git diff and commit the Docker milestone.
+* Push the completed milestone to GitHub.
+* Update the career transition handoff to record Docker as completed.
+* Continue to AWS once the Docker milestone is clean and documented.
