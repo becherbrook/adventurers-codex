@@ -117,6 +117,22 @@ The application now runs in Docker and retrieves its data from PostgreSQL. The D
 
 A database credential was also exposed during troubleshooting. The credential was rotated immediately and the incident was documented separately.
 
+
+## 27 September 2026
+
+Updated the class structure to rename `Rogue` to `Thief`.
+
+Updated the PostgreSQL data and API test to use `Thief` / `thief`.
+
+Ran the full test suite after the change:
+
+`3 passed, 2 warnings`
+
+The existing historical diary entries were left unchanged.
+
+
+
+
 ### Current milestone
 
 The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL**.
