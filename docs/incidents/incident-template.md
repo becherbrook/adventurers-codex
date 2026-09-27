@@ -1,47 +1,22 @@
 # Incident Report
 
-## Incident
+## Date
 
-**Date:**  
-**Severity:**  
-**Status:**  
+**Severity:**
+**Status:**
 
-## Summary
+## What happened
 
-Brief description of what happened.
-
-## Impact
-
-What was affected, who or what was affected, and for how long.
-
-## Detection
-
-How the problem was discovered.
-
-## Initial Hypothesis
-
-What was initially believed to be causing the problem.
+Brief description of the problem, including the relevant symptoms or behaviour.
 
 ## Investigation
 
-Evidence gathered and tests performed during the investigation.
+What was checked, what was discovered, and how the cause was identified.
 
-## Root Cause
+## Resolution
 
-The confirmed underlying cause.
+What was changed to resolve the problem and how the fix was verified.
 
-## Corrective Action
+## Lessons learned
 
-What was changed to resolve the immediate problem.
-
-## Verification
-
-How the fix was tested and confirmed.
-
-## Preventive Improvement
-
-What could be changed to reduce the chance of the problem happening again.
-
-## Lessons Learned
-
-What this incident demonstrated or taught us.
+What the incident demonstrated or what should be done differently in future.
