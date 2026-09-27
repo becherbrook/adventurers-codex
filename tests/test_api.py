@@ -12,7 +12,7 @@ def test_get_classes():
     assert response.status_code == 200
     assert "fighter" in response.json()
     assert "wizard" in response.json()
-    assert "rogue" in response.json()
+    assert "thief" in response.json()
     assert "cleric" in response.json()
 
 def test_get_fighter():
