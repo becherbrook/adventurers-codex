@@ -149,9 +149,23 @@ Configured the AWS Security Group to allow TCP port 8000 from the user's IP and 
 
 The AWS deployment milestone is complete. The EC2 instance was stopped after testing to avoid unnecessary compute charges.
 
+## 29 September 2026
+
+Terraform installed and initialised:
+
+* Existing EC2 instance imported into Terraform rather than recreated.
+* EC2 configuration defined in code.
+* Terraform-managed Security Group created.
+* SSH and API access restricted to my IP.
+* Old AWS-generated Security Group removed.
+* `terraform plan` confirmed no drift.
+* Changes committed and pushed.
+
+A minor AWS error occurred because the Security Group description contained an unsupported apostrophe. This was corrected before applying the configuration.
+
 ### Current milestone
 
-The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL and deployed to AWS**.
+The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL, deployed to AWS and partially managed through Terraform**.
 
 Current application path:
 
@@ -171,10 +185,10 @@ Docker network
 PostgreSQL
 ```
 
-The application has been successfully built, deployed and tested on AWS, including external API access and database connectivity.
+Terraform currently manages the EC2 instance and its Security Group. The existing AWS resources were imported rather than recreated, and `terraform plan` confirms that the configuration matches the deployed infrastructure.
 
 Database configuration uses the `DATABASE_URL` environment variable, with credentials excluded from the repository.
 
-The AWS deployment milestone is **complete**. The EC2 instance is currently stopped.
+The AWS deployment milestone is **complete**. The Terraform stage is currently in progress.
 
-The next stage is Terraform, followed by CI/CD and operational monitoring.
+The next stages are to complete the Terraform work, followed by CI/CD and operational monitoring.
