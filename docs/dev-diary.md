@@ -131,18 +131,38 @@ Ran the full test suite after the change:
 The existing historical diary entries were left unchanged.
 
 
+## 28 September 2026
 
+Set up the AWS environment for the Adventurer's Codex and deployed the existing containerised application to an EC2 instance in the London region (`eu-west-2`).
+
+Configured:
+
+* AWS account access and AWS CLI
+* An EC2 instance with restricted SSH access
+* Docker and the Adventurer's Codex repository
+* A read-only GitHub deploy key
+* FastAPI and PostgreSQL containers on a Docker network
+
+During deployment, the PostgreSQL container initially used an outdated schema. The API failed because the expected `id` column was missing. Checked the current application source and migration history, corrected the schema and recreated the database with the expected data.
+
+Configured the AWS Security Group to allow TCP port 8000 from the user's IP and successfully tested the API externally, including both successful and 404 responses.
+
+The AWS deployment milestone is complete. The EC2 instance was stopped after testing to avoid unnecessary compute charges.
 
 ### Current milestone
 
-The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL**.
+The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL and deployed to AWS**.
 
 Current application path:
 
 ```text
 HTTP client
     ↓
-Docker container
+AWS Security Group
+    ↓
+EC2
+    ↓
+Docker
     ↓
 FastAPI / Uvicorn
     ↓
@@ -151,10 +171,10 @@ Docker network
 PostgreSQL
 ```
 
-The application has been successfully built, run and tested in Docker, including connectivity to the PostgreSQL database and retrieval of the expected class data.
+The application has been successfully built, deployed and tested on AWS, including external API access and database connectivity.
 
 Database configuration uses the `DATABASE_URL` environment variable, with credentials excluded from the repository.
 
-The Docker milestone is **complete** and the repository is clean and synchronised with GitHub.
+The AWS deployment milestone is **complete**. The EC2 instance is currently stopped.
 
-The next stage is AWS fundamentals and deployment of the existing application, without adding unnecessary application complexity.
+The next stage is Terraform, followed by CI/CD and operational monitoring.
