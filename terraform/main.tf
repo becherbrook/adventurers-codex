@@ -16,7 +16,7 @@ resource "aws_instance" "adventurers_codex" {
 
   key_name               = "adventurers-codex-ec2"
   subnet_id              = "subnet-0f75952e6edcacd94"
-  vpc_security_group_ids = ["sg-024872718d8bfa069"]
+  vpc_security_group_ids = [aws_security_group.adventurers_codex.id]
 
   root_block_device {
     volume_size = 8
