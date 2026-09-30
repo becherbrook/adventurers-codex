@@ -22,8 +22,11 @@ resource "aws_instance" "adventurers_codex" {
     volume_size = 8
     volume_type = "gp3"
   }
-
+  lifecycle {
+    prevent_destroy = true
+  }
   tags = {
-    Name = "adventurers-codex-ec2"
+    Name        = "adventurers-codex-ec2"
+    Environment = "dev"
   }
 }
