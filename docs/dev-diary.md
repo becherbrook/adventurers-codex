@@ -163,9 +163,33 @@ Terraform installed and initialised:
 
 A minor AWS error occurred because the Security Group description contained an unsupported apostrophe. This was corrected before applying the configuration.
 
+## 30 September 2026
+
+Completed the Terraform milestone.
+
+Parameterised the Terraform configuration using variables for the AWS region, EC2 instance type, VPC, subnet and allowed IP ranges.
+
+Added Terraform outputs for the EC2 instance ID, private IP and Security Group ID.
+
+Examined the Terraform dependency graph and how resource references create dependencies between resources.
+
+Tested using an AWS AMI data source. `terraform plan` correctly identified that changing the AMI would require the existing EC2 instance to be replaced. The change was not applied and the original configuration was restored.
+
+Created a temporary Terraform module to examine module inputs and outputs. The module was removed after the concept had been demonstrated as it was not required for the current project.
+
+Reviewed Terraform state and backend concepts. Retained local state as appropriate for the current single-user project.
+
+Made a controlled infrastructure change by adding an `Environment = "dev"` tag to the EC2 instance and confirmed that Terraform updated the instance in place.
+
+Added `prevent_destroy = true` to the EC2 resource to protect the instance from accidental Terraform destruction.
+
+Ran `terraform fmt`, `terraform validate` and `terraform plan`. Terraform reported no pending infrastructure changes.
+
+Committed and pushed the completed Terraform work. The Git working tree remains clean.
+
 ### Current milestone
 
-The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL, deployed to AWS and partially managed through Terraform**.
+The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL, deployed to AWS and managed through Terraform**.
 
 Current application path:
 
@@ -185,10 +209,8 @@ Docker network
 PostgreSQL
 ```
 
-Terraform currently manages the EC2 instance and its Security Group. The existing AWS resources were imported rather than recreated, and `terraform plan` confirms that the configuration matches the deployed infrastructure.
+Terraform now manages the EC2 instance and its Security Group, including access rules, configuration variables, outputs and lifecycle protection.
 
-Database configuration uses the `DATABASE_URL` environment variable, with credentials excluded from the repository.
+The AWS and Terraform milestones are **complete**.
 
-The AWS deployment milestone is **complete**. The Terraform stage is currently in progress.
-
-The next stages are to complete the Terraform work, followed by CI/CD and operational monitoring.
+The next stage is **GitHub Actions / CI/CD**, followed by operational monitoring and observability.
