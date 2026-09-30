@@ -1,7 +1,7 @@
 resource "aws_security_group" "adventurers_codex" {
   name        = "adventurers-codex"
   description = "Security group for Adventurers Codex EC2 instance"
-  vpc_id      = "vpc-04f58a77b8aee24c4"
+  vpc_id      = var.vpc_id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "ssh" {
