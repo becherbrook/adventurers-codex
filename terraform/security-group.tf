@@ -7,7 +7,7 @@ resource "aws_security_group" "adventurers_codex" {
 resource "aws_vpc_security_group_ingress_rule" "ssh" {
   security_group_id = aws_security_group.adventurers_codex.id
 
-  cidr_ipv4   = "REDACTED_IP/32"
+  cidr_ipv4   = var.allowed_ssh_cidr
   from_port   = 22
   ip_protocol = "tcp"
   to_port     = 22
@@ -16,7 +16,7 @@ resource "aws_vpc_security_group_ingress_rule" "ssh" {
 resource "aws_vpc_security_group_ingress_rule" "api" {
   security_group_id = aws_security_group.adventurers_codex.id
 
-  cidr_ipv4   = "REDACTED_IP/32"
+  cidr_ipv4   = var.allowed_api_cidr
   from_port   = 8000
   ip_protocol = "tcp"
   to_port     = 8000

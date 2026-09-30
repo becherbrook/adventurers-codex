@@ -18,3 +18,12 @@ variable "subnet_id" {
   description = "Subnet for the Adventurers Codex EC2 instance"
   type        = string
 }
+variable "allowed_ssh_cidr" {
+  description = "CIDR range allowed to connect to SSH"
+  type        = string
+}
+
+variable "allowed_api_cidr" {
+  description = "CIDR range allowed to connect to the API"
+  type        = string
+}
