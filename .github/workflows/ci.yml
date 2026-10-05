@@ -8,6 +8,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: adventurers_codex
+        ports:
+          - 5432:5432
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/adventurers_codex
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -18,7 +30,11 @@ jobs:
           python-version: "3.14"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
+
+      - name: Initialise database
+        run: |
+          python -c "import psycopg; conn = psycopg.connect('$DATABASE_URL'); conn.execute(open('scripts/init_db.sql').read()); conn.commit(); conn.close()"
 
       - name: Run tests
         run: python -m pytest
