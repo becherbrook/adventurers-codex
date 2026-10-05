@@ -187,9 +187,34 @@ Ran `terraform fmt`, `terraform validate` and `terraform plan`. Terraform report
 
 Committed and pushed the completed Terraform work. The Git working tree remains clean.
 
+## 5 October 2026
+
+Introduced GitHub Actions to automate the project's test suite on pushes and pull requests.
+
+Created `.github/workflows/ci.yml` to:
+
+* Check out the repository.
+* Set up Python 3.14.
+* Install the project's runtime and development dependencies.
+* Start a temporary PostgreSQL 18 service.
+* Initialise the database using `scripts/init_db.sql`.
+* Run the test suite using `python -m pytest`.
+
+The initial workflow failed because `pytest` was not included in the installed dependencies. Created `requirements-dev.txt` to include the runtime requirements and development/testing dependencies.
+
+A subsequent local test run showed that the application requires `DATABASE_URL` to be present when the database module is imported. The CI workflow was updated to provide a `DATABASE_URL` pointing to the PostgreSQL service running on the GitHub Actions runner.
+
+The CI database uses a temporary PostgreSQL service rather than the deployed AWS database. This keeps CI isolated from the production infrastructure and allows each workflow run to start with a known database state.
+
+The next CI run failed because the FastAPI test client required the `httpx2` package. Added `httpx2` to `requirements-dev.txt`.
+
+The workflow then completed successfully. GitHub Actions now verifies the application by creating a clean Python environment, starting PostgreSQL, initialising the database and running the API tests.
+
+The GitHub Actions / CI milestone is complete.
+
 ### Current milestone
 
-The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL, deployed to AWS and managed through Terraform**.
+The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL, deployed to AWS, managed through Terraform and automatically tested through GitHub Actions**.
 
 Current application path:
 
@@ -209,8 +234,26 @@ Docker network
 PostgreSQL
 ```
 
-Terraform now manages the EC2 instance and its Security Group, including access rules, configuration variables, outputs and lifecycle protection.
+CI path:
 
-The AWS and Terraform milestones are **complete**.
+```text
+Git push / pull request
+    ↓
+GitHub Actions
+    ↓
+Python 3.14
+    ↓
+PostgreSQL service
+    ↓
+Database initialisation
+    ↓
+pytest
+```
 
-The next stage is **GitHub Actions / CI/CD**, followed by operational monitoring and observability.
+Terraform manages the EC2 instance and its Security Group, including access rules, configuration variables, outputs and lifecycle protection.
+
+GitHub Actions now provides automated test verification using a disposable PostgreSQL environment.
+
+The AWS, Terraform and GitHub Actions / CI milestones are **complete**.
+
+The next stage is **operational monitoring and observability**, followed by logging, metrics, alerting, reliability, backups and recovery.
