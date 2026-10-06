@@ -212,48 +212,47 @@ The workflow then completed successfully. GitHub Actions now verifies the applic
 
 The GitHub Actions / CI milestone is complete.
 
-### Current milestone
+## 6 October 2026
 
-The Adventurer's Codex is now a **containerised FastAPI application backed by PostgreSQL, deployed to AWS, managed through Terraform and automatically tested through GitHub Actions**.
+Started the operational monitoring and observability stage of the project, beginning with application logging.
 
-Current application path:
+Added Python logging to the FastAPI application and introduced useful `INFO`, `WARNING` and `ERROR` messages for normal activity, handled 404 responses and database connection failures.
 
-```text
-HTTP client
-    ↓
-AWS Security Group
-    ↓
-EC2
-    ↓
-Docker
-    ↓
-FastAPI / Uvicorn
-    ↓
-Docker network
-    ↓
-PostgreSQL
-```
+Tested the logging behaviour using `curl` and deliberately introduced controlled failures to investigate the evidence available to an operator.
 
-CI path:
+A request for an unknown class generated a 404 response and corresponding application warning.
+
+Deliberately configured an incorrect PostgreSQL password and tested the API. The client received a generic `500 Internal Server Error`, while the application logs identified the database connection failure and the underlying `psycopg.OperationalError`.
+
+Investigated why application log messages were initially not appearing and identified that the Python logging system had not been configured for the application process. Added `logging.basicConfig(level=logging.INFO)` and verified that application logs were then produced alongside the Uvicorn access logs.
+
+Added explicit handling for `psycopg.OperationalError` around the database connection. Restored the correct database configuration and verified successful API operation.
+
+A temporary Python indentation error (`TabError`) was also encountered and corrected during the changes.
+
+This stage reinforced the operational investigation workflow:
 
 ```text
-Git push / pull request
+Observe
     ↓
-GitHub Actions
+Diagnose
     ↓
-Python 3.14
+Verify
     ↓
-PostgreSQL service
+Correct
     ↓
-Database initialisation
-    ↓
-pytest
+Retest
 ```
 
-Terraform manages the EC2 instance and its Security Group, including access rules, configuration variables, outputs and lifecycle protection.
+`curl` was used as a command-line HTTP diagnostic tool throughout the investigation.
 
-GitHub Actions now provides automated test verification using a disposable PostgreSQL environment.
+The next stage is metrics and health visibility, followed by CloudWatch, Prometheus, Grafana and alerting.
+
+
+## Current milestone
 
 The AWS, Terraform and GitHub Actions / CI milestones are **complete**.
 
-The next stage is **operational monitoring and observability**, followed by logging, metrics, alerting, reliability, backups and recovery.
+The current stage is **operational monitoring and observability**. Application logging has now been introduced, including useful information, warning and error messages and investigation of controlled failures.
+
+Next: metrics and health visibility, followed by CloudWatch, Prometheus, Grafana and alerting.
