@@ -248,11 +248,34 @@ Retest
 
 The next stage is metrics and health visibility, followed by CloudWatch, Prometheus, Grafana and alerting.
 
+## 7 October 2026
+
+Continued the operational monitoring and observability stage by adding a health endpoint to the FastAPI application.
+
+Added `GET /health` to verify database connectivity and return `200 OK` when the database is available or `503 Service Unavailable` when it is unavailable.
+
+The existing local PostgreSQL installation was identified as a native Ubuntu service listening on port 5432. Created and verified a PostgreSQL database dump before making infrastructure changes.
+
+Stopped the native PostgreSQL service and created a persistent Docker volume for the database. Deployed PostgreSQL 18 as a Docker container with a restart policy of `unless-stopped` and restored the existing database from the verified backup.
+
+The database dump contained ownership metadata referring to the old PostgreSQL `postgres` role. Updated the restored `classes` table to be owned by the application's `codex_app` user.
+
+Searched the project source and configuration for references to the old `postgres` role. The only active references were found in the GitHub Actions CI configuration, where the PostgreSQL superuser is currently used for the temporary CI database.
+
+Reconnected the FastAPI application to the Docker PostgreSQL instance using the existing `DATABASE_URL` configuration and verified that `/health` returned `200 OK` with the database connected.
+
+Performed a controlled failure test by stopping the PostgreSQL container. `/health` correctly returned `503 Service Unavailable` with the database reported as unavailable.
+
+Restarted the PostgreSQL container and verified that the application recovered successfully. Confirmed that all four class records remained present after the container restart, demonstrating that the Docker volume was providing persistent database storage.
+
+The local PostgreSQL environment now uses a persistent Docker container rather than the native PostgreSQL installation.
+
+The next step is to review the GitHub Actions CI database configuration and consider aligning it with the application's `codex_app` least-privilege model.
 
 ## Current milestone
 
 The AWS, Terraform and GitHub Actions / CI milestones are **complete**.
 
-The current stage is **operational monitoring and observability**. Application logging has now been introduced, including useful information, warning and error messages and investigation of controlled failures.
+The current stage is **operational monitoring and observability**. Application logging and basic health visibility have now been introduced, including controlled failure testing of the database dependency.
 
-Next: metrics and health visibility, followed by CloudWatch, Prometheus, Grafana and alerting.
+Next: metrics and health visibility beyond the current health check, followed by CloudWatch, Prometheus, Grafana and alerting.

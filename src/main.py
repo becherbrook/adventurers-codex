@@ -10,6 +10,20 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI()
 logger = logging.getLogger(__name__)
 
+@app.get("/health")
+def health_check():
+    try:
+        conn = get_connection()
+        conn.close()
+        return {"status": "healthy", "database": "connected"}
+
+    except psycopg.OperationalError:
+        logger.error("Health check database connection failed")
+        raise HTTPException(
+            status_code=503,
+            detail={"status": "unhealthy", "database": "unavailable"},
+        )
+
 @app.get("/classes")
 def get_classes():
     try:

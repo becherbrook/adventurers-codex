@@ -29,7 +29,7 @@ The application connects to PostgreSQL using Psycopg.
 
 Database configuration is supplied through the `DATABASE_URL` environment variable rather than being stored in source code.
 
-The current development environment runs locally on an Ubuntu Server VM using Uvicorn and PostgreSQL.
+The current development environment runs locally on Ubuntu Server VM using Uvicorn and PostgreSQL in Docker. PostgreSQL uses a persistent Docker volume for database storage.
 
 ## Development setup
 
