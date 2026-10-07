@@ -12,13 +12,14 @@ jobs:
       postgres:
         image: postgres:18
         env:
+          POSTGRES_USER: codex_app
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: adventurers_codex
         ports:
           - 5432:5432
 
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/adventurers_codex
+      DATABASE_URL: postgresql://codex_app:postgres@localhost:5432/adventurers_codex
 
     steps:
       - name: Check out repository
