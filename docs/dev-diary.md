@@ -270,7 +270,9 @@ Restarted the PostgreSQL container and verified that the application recovered s
 
 The local PostgreSQL environment now uses a persistent Docker container rather than the native PostgreSQL installation.
 
-The next step is to review the GitHub Actions CI database configuration and consider aligning it with the application's `codex_app` least-privilege model.
+Reviewed the GitHub Actions CI database configuration and changed the temporary CI PostgreSQL service to use the application's `codex_app` user rather than the PostgreSQL superuser. Updated the CI `DATABASE_URL` accordingly and verified that the workflow completed successfully.
+
+The next stage is to continue the operational monitoring and observability work with metrics and health visibility beyond the current health check.
 
 ## Current milestone
 
