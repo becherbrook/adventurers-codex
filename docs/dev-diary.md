@@ -274,10 +274,36 @@ Reviewed the GitHub Actions CI database configuration and changed the temporary 
 
 The next stage is to continue the operational monitoring and observability work with metrics and health visibility beyond the current health check.
 
+## 8 October 2026
+
+Continued the operational monitoring and observability stage by adding Prometheus metrics to the FastAPI application.
+
+Added the Prometheus client library and exposed a `/metrics/` endpoint. Added request metrics recording the HTTP method, endpoint and response status.
+
+Created a Prometheus container on the same Docker network as the FastAPI and PostgreSQL containers. Configured Prometheus to scrape the application using the Docker container hostname rather than a container IP address.
+
+Verified that Prometheus could retrieve the application's metrics and recorded both successful requests and the previously tested `503` database failure and subsequent `200` recovery.
+
+During configuration, Prometheus initially failed to resolve the application hostname. Investigation showed that the configured hostname contained a spelling error. Correcting the hostname restored connectivity and the Prometheus target returned to `UP`.
+
+This reinforced the operational investigation principle of verifying configuration and service names before assuming an underlying infrastructure failure.
+
+The first metrics milestone is complete:
+
+```text
+Application
+    ↓
+/metrics
+    ↓
+Prometheus
+    ↓
+Queryable operational data
+```
+
 ## Current milestone
 
 The AWS, Terraform and GitHub Actions / CI milestones are **complete**.
 
-The current stage is **operational monitoring and observability**. Application logging and basic health visibility have now been introduced, including controlled failure testing of the database dependency.
+The current stage is **operational monitoring and observability**. Application logging, health visibility and Prometheus metrics have now been introduced, including controlled failure testing of the database dependency and monitoring of the resulting service recovery.
 
-Next: metrics and health visibility beyond the current health check, followed by CloudWatch, Prometheus, Grafana and alerting.
+Next: CloudWatch, Grafana and alerting, followed by further reliability and incident-response work.

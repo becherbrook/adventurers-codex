@@ -1,6 +1,8 @@
 import logging
 import psycopg
 
+from prometheus_client import Counter, make_asgi_app
+
 from fastapi import FastAPI, HTTPException
 
 from src.database import get_connection
@@ -8,7 +10,29 @@ from src.database import get_connection
 logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
+
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
+
 logger = logging.getLogger(__name__)
+
+request_count = Counter(
+    "http_requests_total",
+    "Total number of HTTP requests",
+    ["method", "endpoint", "status"],
+)
+
+@app.middleware("http")
+async def record_request(request, call_next):
+    response = await call_next(request)
+
+    request_count.labels(
+        method=request.method,
+        endpoint=request.url.path,
+        status=response.status_code,
+    ).inc()
+
+    return response
 
 @app.get("/health")
 def health_check():
