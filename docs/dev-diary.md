@@ -276,6 +276,32 @@ The next stage is to continue the operational monitoring and observability work 
 
 ## 8 October 2026
 
+Continued the operational monitoring and observability stage by introducing a repeatable local database credential-handling procedure.
+
+Previously, starting a development session required manually setting up the database environment and supplying the required connection details. There was no defined procedure for handling the database password.
+
+Created `scripts/dev-env.sh` to prompt for the database password at the start of a development session, construct the required `DATABASE_URL` and export it for the current shell session.
+
+The temporary password variable is then unset after the connection string has been created.
+
+This means the normal development process is now:
+
+```text
+Start development session
+    ↓
+Run scripts/dev-env.sh
+    ↓
+Enter database password when prompted
+    ↓
+DATABASE_URL configured for the current shell
+    ↓
+Run application / development commands
+```
+
+The password is not stored in the script or shell configuration.
+
+The new procedure provides a simple, repeatable approach to local credential handling and establishes a basic security process where none previously existed.
+
 Continued the operational monitoring and observability stage by adding Prometheus metrics to the FastAPI application.
 
 Added the Prometheus client library and exposed a `/metrics/` endpoint. Added request metrics recording the HTTP method, endpoint and response status.
