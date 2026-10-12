@@ -33,9 +33,34 @@ The current development environment runs locally on Ubuntu Server VM using Uvico
 
 ## Development setup
 
-Set the PostgreSQL connection string in the shell environment before running the application or tests:
+The development environment uses Ubuntu, Docker and PostgreSQL.
 
-Use the password configured for the local `codex_app` PostgreSQL user:
+### Configure the database connection
+
+Start the development database container, then configure the connection string securely:
 
 ```bash
-export DATABASE_URL="postgresql://codex_app:PASSWORD@localhost:5432/adventurers_codex"
+source scripts/dev-env.sh
+```
+
+Enter the local PostgreSQL password when prompted. The script configures `DATABASE_URL` for the current shell session without storing the password in the script or shell configuration.
+
+Keep this shell open while running the application or tests.
+
+### Run the tests
+
+```bash
+python -m pytest
+```
+
+### Run the API locally
+
+```bash
+uvicorn src.main:app --reload
+```
+
+The API will be available locally at `http://127.0.0.1:8000`.
+
+### Monitoring
+
+Prometheus scrapes the application's metrics from `/metrics/` when the development services are running on the configured Docker network.
