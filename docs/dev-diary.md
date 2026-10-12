@@ -326,6 +326,22 @@ Prometheus
 Queryable operational data
 ```
 
+## 12 October 2026
+
+Conducted a repository security and publication-readiness review before considering making the GitHub repository public.
+
+Reviewed the tracked files and confirmed that local environment files, Terraform state and variable files were not tracked. Reviewed `.gitignore` and `.dockerignore` to ensure local credentials, Terraform working files and variable files were excluded from Git and the Docker build context. Added a general `*.tfvars` exclusion to both files and committed and pushed the changes.
+
+Reviewed the repository history and removed the previously exposed IP address and personal email address from historical commit content and author metadata. Force-pushed the rewritten history to GitHub and verified that the remote `main` branch matched the cleaned history.
+
+Searched tracked files for common credential patterns and confirmed that the remaining matches were expected examples or runtime credential-handling code, rather than identified live credentials. Confirmed that the development database password is entered through `scripts/dev-env.sh` rather than stored in the script or shell configuration.
+
+Updated the README to document the development setup, secure database connection procedure, test command, local API startup and Prometheus monitoring. Committed and pushed the documentation changes.
+
+This review reinforced that repository security requires attention to more than the current source files. Git history, environment configuration, infrastructure state, Docker build context and documentation can all expose information if they are not handled correctly.
+
+The repository security review and corrective changes are complete. The project is now ready for the final checks before making the GitHub repository public.
+
 ## Current milestone
 
 The AWS, Terraform and GitHub Actions / CI milestones are **complete**.
