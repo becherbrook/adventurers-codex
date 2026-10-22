@@ -342,10 +342,45 @@ This review reinforced that repository security requires attention to more than 
 
 The repository security review and corrective changes are complete. The project is now ready for the final checks before making the GitHub repository public.
 
+## 22 October 2026
+
+Responded to an external security advisory concerning compromised eMudhra/emSign certificate authority infrastructure.
+
+Assessed the Adventurer's Codex development and runtime environments to determine whether affected certificate trust was present.
+
+The Ubuntu development VM was found to have an older CA certificate package and was updated to the vendor-fixed version. The Docker application image was also found to contain an older Debian CA certificate package, so the Python base image was refreshed and the application image rebuilt with the patched certificate store.
+
+The Python development virtual environment contained an affected version of `certifi`. This was upgraded to the patched release and the Python environment was checked for broken dependencies. Investigation confirmed that `certifi` was not part of the application's declared runtime dependencies and was not present in the rebuilt application container.
+
+The existing Prometheus container image was inspected and confirmed to contain the affected `emSign ECC Root CA - G3`. Prometheus was updated to the vendor's security-fixed 3.15.1 release and the container was recreated while retaining its existing configuration and persistent data.
+
+During the Prometheus update, repeated Docker image pulls caused the VirtualBox VM to become unresponsive with CPU soft-lockup messages. The VM resource allocation was increased from 2 to 4 vCPUs and from approximately 2 GB to 4 GB RAM. The same image pull subsequently completed successfully, although the precise cause of the VM lockup was not established.
+
+Post-remediation testing confirmed that the application, PostgreSQL connectivity, API endpoints, automated tests and Prometheus metrics continued to operate successfully.
+
+The security response has been documented separately in `docs/incidents/2026-10-22-emudhra-ca-remediation.md`.
+
+This exercise demonstrated assessment and remediation of a real external security advisory across multiple layers of an application environment rather than simply applying an operating-system update.
+
 ## Current milestone
 
-The AWS, Terraform and GitHub Actions / CI milestones are **complete**.
+The main Adventurer's Codex infrastructure and operations milestones are **complete**.
 
-The current stage is **operational monitoring and observability**. Application logging, health visibility and Prometheus metrics have now been introduced, including controlled failure testing of the database dependency and monitoring of the resulting service recovery.
+The project currently demonstrates:
 
-Next: CloudWatch, Grafana and alerting, followed by further reliability and incident-response work.
+* Python/FastAPI application development and API testing.
+* PostgreSQL database integration and persistent containerised storage.
+* Docker application and service containerisation.
+* AWS EC2 deployment.
+* Terraform infrastructure management.
+* GitHub Actions CI.
+* Application logging and health monitoring.
+* Prometheus metrics and service monitoring.
+* Secure local credential handling.
+* Repository security review and remediation.
+* Structured troubleshooting and incident documentation.
+* Assessment and remediation of an external security advisory.
+
+The project is currently in a **stable, paused state** rather than active feature development.
+
+Possible future work includes CloudWatch, Grafana, alerting and further reliability or incident-response exercises, but these are not currently committed milestones. Future development can resume when there is a useful technical or learning objective rather than extending the project solely for the sake of adding more tooling.
